@@ -8,20 +8,25 @@ import sys, os, re, html, subprocess, shutil, argparse
 
 # 三個系列＝三個高度。地平線的位置就是你站的位置。
 SERIES = {
-    "想太多": {  # 童年與家庭 — 暮色，地平線在中間（平視）
+    "關於": {   # 米白，最暖最亮
+        "name": "關於我",
+        "top": (("#f2ebe0", "#e0d4c3"), ("#f2ebe0", "#e0d4c3")),
+        "fg": "#3b332a", "sub": "#8d8273", "line": 0.65,
+    },
+    "想太多": {  # 暖灰藕，淺底深字
         "name": "不要想太多",
-        "top": (("#6b6a78", "#3b3a4a"), ("#4a4954", "#232230")),  # 起→迄
-        "fg": "#ece9f0", "sub": "#9c98aa", "line": 0.50,
+        "top": (("#e6dfe0", "#cfc4c7"), ("#e6dfe0", "#cfc4c7")),
+        "fg": "#3a3338", "sub": "#8a7f85", "line": 0.50,
     },
-    "英呎": {    # 高空 — 稀薄的冷光，地平線壓很低（你在上面）
+    "英呎": {    # 霧藍，但提亮
         "name": "三萬英呎",
-        "top": (("#c9d4dd", "#9fb0c0"), ("#8c9cab", "#5d6b79")),
-        "fg": "#1c2630", "sub": "#54606d", "line": 0.80,
+        "top": (("#e4ebef", "#c8d5dd"), ("#e4ebef", "#c8d5dd")),
+        "fg": "#2c3741", "sub": "#7b8a95", "line": 0.80,
     },
-    "身體": {    # 土 — 溫暖的陶土，地平線拉很高（你在地上）
+    "身體": {    # 陶土提亮
         "name": "身體記得",
-        "top": (("#d8cbb8", "#b9a68d"), ("#a08d74", "#6d5d4a")),
-        "fg": "#2a231a", "sub": "#6b5c49", "line": 0.22,
+        "top": (("#efe3d2", "#dbc8ae"), ("#efe3d2", "#dbc8ae")),
+        "fg": "#3a2f23", "sub": "#8a7a64", "line": 0.22,
     },
 }
 
@@ -39,7 +44,8 @@ p{{font-size:40px;line-height:1.88;letter-spacing:.04em;margin-bottom:64px;
 p:last-child{{margin-bottom:0;margin-top:24px}}
 p:first-child{{margin-top:0}}
 strong{{font-weight:700;letter-spacing:.055em}}
-.cover p{{font-size:54px;line-height:1.8;margin-bottom:56px}}
+.cover p{{font-size:40px}}
+.cover p:first-of-type{{font-size:54px;line-height:1.8;margin-bottom:76px}}
 .cover{{justify-content:center;padding:200px 106px 200px}}
 .title{{margin-top:84px;font-size:27px;color:{sub};letter-spacing:.3em}}
 .tag{{position:absolute;top:104px;left:106px;font-size:25px;
@@ -73,8 +79,10 @@ def mix(a, b, t):
     x, y = f(a), f(b)
     return "#%02x%02x%02x" % tuple(round(x[i] + (y[i]-x[i])*t) for i in range(3))
 
-def para(line):
-    s = html.escape(line.strip())
+def para(block):
+    """空行分段；段落內部的換行用 <br> 接起來，不另外加段距"""
+    lines = [html.escape(l.strip()) for l in block.strip().split("\n") if l.strip()]
+    s = "<br>".join(lines)
     return "<p>" + re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s) + "</p>"
 
 def main():
@@ -103,7 +111,7 @@ def main():
         page = HTML.format(
             c1=mix(s1, e1, t), c2=mix(s2, e2, t),
             fg=S["fg"], sub=S["sub"], ly=round(1350*S["line"]),
-            body="\n".join(para(l) for l in sl.split("\n") if l.strip())
+            body="\n".join(para(blk) for blk in re.split(r"\n\s*\n", sl) if blk.strip())
                  + (('<div class="title">' + title + '</div>') if (i == 1 and title) else ""),
             series=S["name"], n=i, tot=total, pct=round(i/total*100, 2),
             vj="center",
