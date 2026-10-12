@@ -9,7 +9,7 @@ import sys, os, re, html, subprocess, shutil, argparse
 # 三個系列＝三個高度。地平線的位置就是你站的位置。
 SERIES = {
     "關於": {   # 米白，最暖最亮
-        "name": "關於我",
+        "name": "",
         "top": (("#f2ebe0", "#e0d4c3"), ("#f2ebe0", "#e0d4c3")),
         "fg": "#3b332a", "sub": "#8d8273", "line": 0.65,
     },
@@ -116,7 +116,7 @@ def main():
             series=S["name"], n=i, tot=total, pct=round(i/total*100, 2),
             vj="center",
             cls="cover" if i == 1 else "",
-            tag=('<div class="tag">' + S["name"] + '</div>') if i == 1 else "")
+            tag=('<div class="tag">' + S["name"] + '</div>') if (i == 1 and S["name"]) else "")
         hp = os.path.join(a.out, f"_{i:02d}.html")
         open(hp, "w", encoding="utf-8").write(page)
         png = os.path.join(a.out, f"card_{i:02d}.png")
