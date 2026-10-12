@@ -100,7 +100,7 @@ def main():
     cb = chromium()
 
     for i, sl in enumerate(slides, 1):
-        t = (i-1)/max(total-1, 1)          # 0 → 1，整組逐格入夜
+        t = 0                               # 同系列同顏色：整組不變色
         page = HTML.format(
             c1=mix(s1, e1, t), c2=mix(s2, e2, t),
             fg=S["fg"], sub=S["sub"], ly=round(1350*S["line"]),
