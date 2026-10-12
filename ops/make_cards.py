@@ -106,7 +106,7 @@ def main():
             body="\n".join(para(l) for l in sl.split("\n") if l.strip())
                  + (('<div class="title">' + title + '</div>') if (i == 1 and title) else ""),
             series=S["name"], n=i, tot=total, pct=round(i/total*100, 2),
-            vj="center" if len([l for l in sl.split("\n") if l.strip()]) <= 2 else "flex-start",
+            vj="center",
             cls="cover" if i == 1 else "",
             tag=('<div class="tag">' + S["name"] + '</div>') if i == 1 else "")
         hp = os.path.join(a.out, f"_{i:02d}.html")
