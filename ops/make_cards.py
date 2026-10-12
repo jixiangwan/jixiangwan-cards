@@ -41,7 +41,6 @@ p:first-child{{margin-top:0}}
 strong{{font-weight:700;letter-spacing:.055em}}
 .cover p{{font-size:54px;line-height:1.8;margin-bottom:56px}}
 .cover{{justify-content:center;padding:200px 106px 200px}}
-.cover .meta span:first-child{{opacity:0}}
 .title{{margin-top:84px;font-size:27px;color:{sub};letter-spacing:.3em}}
 .tag{{position:absolute;top:104px;left:106px;font-size:25px;
   color:{sub};letter-spacing:.42em}}
@@ -54,7 +53,7 @@ strong{{font-weight:700;letter-spacing:.055em}}
 {tag}
 <div class="horizon"></div>
 {body}
-<div class="meta"><span>{series}</span><span>{n:02d} / {tot:02d}</span></div>
+<div class="meta"><span>季向晚</span><span>{n:02d} / {tot:02d}</span></div>
 <div class="bar"></div>
 </body></html>"""
 
