@@ -24,13 +24,16 @@ commas, periods = body.count('，'), body.count('。')
 
 def ok(c): return '✓' if c else '✗'
 
+import re as _re
+outside = _re.sub(r'「[^」]*」', '', body)      # 驚嘆號只算引號外的
+
 print(f"字數 {n}\n")
 print("── 寫法 ──")
 print(f" {ok(any(x>=70 for x in slen))} 最長句 {max(slen) if slen else 0} 字（要有 ≥70 的長句）")
 print(f" {ok(any(x<=10 for x in slen))} 最短句 {min(slen) if slen else 0} 字")
 need = 8 if n >= 800 else 3
 print(f" {ok(len(single)>=need)} 單句成段 {len(single)} 處（需 ≥{need}）")
-print(f" {ok(body.count('！')==0)} 驚嘆號 {body.count('！')} 個（需 0）")
+print(f" {ok(outside.count(chr(65281))==0)} 驚嘆號（引號外）{outside.count(chr(65281))} 個，需 0；引號內 {body.count(chr(65281))-outside.count(chr(65281))} 個")
 print(f" {ok(body.count('#')<=2)} hashtag {body.count('#')} 個（需 ≤2）")
 print(f" {ok('「' in body)} 引號 {body.count('「')} 處")
 
