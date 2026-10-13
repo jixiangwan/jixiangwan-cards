@@ -18,7 +18,7 @@ import os, sys, json, time, argparse, urllib.parse, urllib.request, urllib.error
 #   Instagram Login（推薦，不用 FB 粉絲頁）→ graph.instagram.com
 #   Facebook Login（要粉絲頁，但能用 hashtag 搜尋、廣告）→ graph.facebook.com
 GRAPH = os.environ.get("IG_API_BASE", "https://graph.instagram.com/v23.0")
-MAX_CAROUSEL = 10          # IG 輪播 API 硬上限，App 手動可以更多，API 不行
+MAX_CAROUSEL = 20          # 文件寫 10，實測 12 可以；上限以實測為準
 CONTAINER_TTL_HOURS = 24   # 容器 24 小時不發就過期，所以不能提前排程
 
 
@@ -92,7 +92,7 @@ def wait_ready(container_id, timeout=300):
     raise SystemExit(f"容器 {container_id} 超過 {timeout} 秒還沒好")
 
 
-def publish(image_urls, caption, dry_run=False):
+def publish(image_urls, caption, dry_run=False, no_publish=False):
     if not 2 <= len(image_urls) <= MAX_CAROUSEL:
         sys.exit(f"輪播要 2–{MAX_CAROUSEL} 張，你給了 {len(image_urls)} 張。")
 
@@ -127,6 +127,10 @@ def publish(image_urls, caption, dry_run=False):
         "caption": caption,
     }, "POST")
     wait_ready(parent["id"])
+
+    if no_publish:
+        print(f"[no-publish] 母容器建立成功 {parent['id']}（{len(children)} 張），沒有送出。")
+        return None
 
     out = call(ig + "/media_publish", {"creation_id": parent["id"]}, "POST")
     print("已發佈，media id =", out["id"])
@@ -190,6 +194,7 @@ def main():
     p.add_argument("--urls", required=True, help="一行一個公開圖片網址的檔案")
     p.add_argument("--caption", required=True, help="文案檔")
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--no-publish", action="store_true")
     i = sub.add_parser("insights"); i.add_argument("--days", type=int, default=30)
     c = sub.add_parser("comments"); c.add_argument("--media", required=True)
     a = ap.parse_args()
@@ -203,7 +208,7 @@ def main():
     elif a.cmd == "publish":
         urls = [l.strip() for l in open(a.urls, encoding="utf-8") if l.strip()]
         cap = open(a.caption, encoding="utf-8").read().strip()
-        publish(urls, cap, a.dry_run)
+        publish(urls, cap, a.dry_run, a.no_publish)
     elif a.cmd == "insights":
         insights(a.days)
     elif a.cmd == "comments":

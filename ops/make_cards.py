@@ -57,7 +57,7 @@ strong{{font-weight:700;letter-spacing:.055em}}
   background:{fg};opacity:.22}}
 </style></head><body class="{cls}">
 {tag}
-<div class="horizon"></div>
+
 {body}
 <div class="meta"><span>季向晚</span><span>{n:02d} / {tot:02d}</span></div>
 <div class="bar"></div>
